@@ -27,8 +27,6 @@ services:
       MYSQL_USER: shine
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
-    volumes:
-      - ./docker-compose/mysql:/docker-entrypoint-initdb.d
     networks:
       - projectku
 
@@ -40,7 +38,7 @@ services:
       - 8000:80
     volumes:
       - ./:/var/www
-      - ./docker-compose/nginx:/etc/nginx/conf.d/
+      - ./docker/nginx:/etc/nginx/conf.d/
     networks:
       - projectku
 
