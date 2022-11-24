@@ -1,0 +1,49 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: shine
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: projectku
+    container_name: projectku-app
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    networks:
+      - projectku
+
+  db:
+    image: mysql:8.0
+    container_name: projectku-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: projectku
+      MYSQL_ROOT_PASSWORD: shine
+      MYSQL_PASSWORD: shine
+      MYSQL_USER: shine
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./docker-compose/mysql:/docker-entrypoint-initdb.d
+    networks:
+      - projectku
+
+  nginx:
+    image: nginx:alpine
+    container_name: projectku-nginx
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ./:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
+    networks:
+      - projectku
+
+networks:
+  projectku:
+    driver: bridge
